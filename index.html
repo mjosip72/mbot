@@ -3,38 +3,6 @@
 
 <body>
 
-<<<<<<< Updated upstream
-<button onclick="sendData('on')">On</button>
-<br>
-<button onclick="sendData('off')">Off</button>
-
-<p id="out">...</p>
-
-<script>
-
-var out = document.getElementById("out");
-
-log("e");
-log(navigator.bluetooth);
-navigator.bluetooth.getAvailability().then(available => {
-  if (available)
-      log("This device supports Bluetooth!");
-  else
-      log("Doh! Bluetooth is not supported");
-});
-
-function log(x) {
-  out.innerHTML += x + "<br>";
-}
-
-function sendData(x) {
-  log(x);
-}
-
-</script>
-
-</body>
-=======
     <p id="out"></p>
     <button onclick="on_btn_connect()">Connect</button>
 
@@ -97,5 +65,4 @@ function sendData(x) {
 
 </body>
 
->>>>>>> Stashed changes
 </html>
