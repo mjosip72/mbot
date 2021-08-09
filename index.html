@@ -49,7 +49,7 @@
             return characteristic.readValue();
         })
         .then(value => {
-            console.log(value);
+            log(value);
         })
         .catch(error => {
             log(error);
@@ -58,7 +58,7 @@
     }
 
     function on_characteristic_value_changed(event) {
-        console.log("New value = " + event.target.value);
+        log("New value = " + event.target.value);
     }
 
     </script>
