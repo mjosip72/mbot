@@ -3,7 +3,7 @@
 
 <body>
 
-    <p>v0.1.6</p>
+    <p>v0.1.61</p>
     <p id="out"></p>
     <button onclick="on_btn_connect()">Connect</button>
     <button onclick="on_btn_control(10)">On</button>
@@ -49,7 +49,7 @@
         })
         .then(characteristic => {
             log("Success");
-            cdh = characteristic;
+            ch = characteristic;
         })
         .catch(error => {
             log(error);
