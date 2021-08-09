@@ -3,7 +3,7 @@
 
 <body>
 
-    <p>v0.1.4</p>
+    <p>v0.1.5</p>
     <p id="out"></p>
     <button onclick="on_btn_connect()">Connect</button>
 
@@ -45,13 +45,15 @@
         })
         .then(characteristic => {
             log("Success");
-            characteristic.addEventListener("characteristicvaluechanged", on_characteristic_value_changed);
-            log("Reading value");
-            return characteristic.readValue();
+            let v = Uint8Array.of(66);
+            characteristic.writeValue(v);
+            //characteristic.addEventListener("characteristicvaluechanged", on_characteristic_value_changed);
+            //log("Reading value");
+            //return characteristic.readValue();
         })
-        .then(value => {
-            log(value);
-        })
+        //.then(value => {
+        //    log(value);
+        //})
         .catch(error => {
             log(error);
         });
