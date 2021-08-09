@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
+
 <body>
 
+<<<<<<< Updated upstream
 <button onclick="sendData('on')">On</button>
 <br>
 <button onclick="sendData('off')">Off</button>
@@ -32,4 +34,68 @@ function sendData(x) {
 </script>
 
 </body>
+=======
+    <p id="out"></p>
+    <button onclick="on_btn_connect()">Connect</button>
+
+    <script>
+
+    var out = document.getElementById("out");
+    function log(x) { out.innerHTML += x + "<br>"; }
+
+    const SERVICE_UUID = "a2bf82f9-36a0-458b-b41b-bdf3c2924de9";
+    const CHARACTERISTIC_UUID = "4a644eb4-2c92-429b-b022-d827fa83db5f";
+
+    function on_btn_connect() {
+
+        log("Requesting BLE device...");
+
+        let options = {
+            filters: [
+                { name: "Croduino Nova32 BLE" },    
+                { services: [SERVICE_UUID] }
+            ]
+        };
+
+        navigator.bluetooth.requestDevice(options)
+        .then(device => {
+            log("Device connected");
+            log(device.name);
+            log("Attempts to connect to remote GATT server");
+            return device.gatt.connect();
+        })
+        .then(server => {
+            log("Success");
+            log("Getting service");
+            return server.getPrimaryService(SERVICE_UUID);
+        })
+        .then(service => {
+            log("Success");
+            log("Getting characteristic");
+            return service.getCharacteristic(CHARACTERISTIC_UUID);
+        })
+        .then(characteristic => {
+            log("Success");
+            characteristic.addEventListener("characteristicvaluechanged", on_characteristic_value_changed);
+            log("Reading value");
+            return characteristic.readValue();
+        })
+        .then(value => {
+            console.log(value);
+        })
+        .catch(error => {
+            log(error);
+        });
+
+    }
+
+    function on_characteristic_value_changed(event) {
+        console.log("New value = " + event.target.value);
+    }
+
+    </script>
+
+</body>
+
+>>>>>>> Stashed changes
 </html>
