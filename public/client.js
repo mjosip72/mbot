@@ -41,7 +41,7 @@ function connect() {
         call.answer();
         call.on("stream", robotStream => {
 
-            console.log("Server mi je poslao svoj stream ;)");
+            console.log("Server mi je poslao svoj stream ;)   ");
             console.log(robotStream);
 
             video.srcObject = robotStream;
