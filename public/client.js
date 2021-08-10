@@ -49,6 +49,22 @@ function connect() {
     });
 
     peer.on("call", call => {
+        call.answer();
+        call.on("stream", robotStream => {
+            robot_stream = robotStream;
+             log("Server mi je poslao svoj stream", robotStream);
+            video.srcObject = robotStream;
+            video.addEventListener('loadedmetadata', () => {
+                  video.play();
+            });
+
+            connected = true;
+            control_btn.innerHTML = "Disconnect";
+
+        });
+    });
+    /*
+    peer.on("call", call => {
         
         log("Server me zove, odgovoram na poziv");
 
@@ -81,6 +97,7 @@ function connect() {
         });
 
     });
+    */
 
     peer.on("connection", conn => {
         raw_conn = conn;
