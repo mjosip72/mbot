@@ -6,7 +6,7 @@ let options = {
 };
 if(!USE_LOCALHOST) {
     options.host = "https://mjosip-mbot.herokuapp.com";
-    options.secure = true;
+    options.secure = false;
 }
 
 let control_btn = document.getElementById("control_btn");
@@ -65,7 +65,7 @@ let socket = io(options.host);
 
 let peer = new Peer("robot", {
     host: options.host,
-    port: "3001",
+    port: "9000",
     secure: options.secure
 });
 
