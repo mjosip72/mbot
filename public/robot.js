@@ -115,10 +115,6 @@ let __speed = 2;
 
 function send_key_event(x) {
     
-    if(raw_conn) {
-        raw_conn.send(x);
-    }
-
     if(x == "shift") __speed = 3;
     else if(x == "alt") __speed = 1;
     else if(x == "r") __speed = 2;
