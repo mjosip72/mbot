@@ -56,6 +56,8 @@ function stop() {
 
 }
 
+let raw_conn;
+
 let socket = io(host);
 
 let peer = new Peer("robot", {
@@ -68,6 +70,7 @@ peer.on("open", id => {
     console.log("Spojeno");
     socket.emit("robot-connected", id);
 });
+
 
 socket.on("client-connected", () => {
 
@@ -84,4 +87,55 @@ socket.on("client-connected", () => {
         });
     });
 
+    let conn = peer.connect("client");
+    raw_conn = conn;
+    conn.on("open", () => {
+        conn.on("data", data => {
+            console.log("Received", data);
+            send_key_event(data);
+        });
+    });
+
 });
+
+
+
+
+
+
+
+
+
+
+
+let control_span = document.getElementById("control");
+
+let __key = "";
+let __speed = 2;
+
+function send_key_event(x) {
+    
+    if(raw_conn) {
+        raw_conn.send(x);
+    }
+
+    if(x == "shift") __speed = 3;
+    else if(x == "alt") __speed = 1;
+    else if(x == "r") __speed = 2;
+    else if(x == "x") __key = "";
+    else __key = x;
+
+    if(__speed != 2 && __key == "") {
+        control_span.innerHTML = "";
+        return;
+    }
+
+    if(__speed == 3) {
+        control_span.innerHTML = __key + " - brzo";
+    }else if(__speed == 2) {
+        control_span.innerHTML = __key;
+    }else if(__speed == 1) {
+        control_span.innerHTML = __key + " - sporo";
+    }
+    
+}
