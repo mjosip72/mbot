@@ -2,11 +2,12 @@
 let USE_LOCALHOST = false;
 let options = {
     host: "/",
-    secure: false
+    secure: false,
+    port: 443
 };
 if(!USE_LOCALHOST) {
     options.host = "https://mjosip-mbot.herokuapp.com";
-    options.secure = false;
+    options.secure = true;
 }
 
 let control_btn = document.getElementById("control_btn");
@@ -27,7 +28,7 @@ function connect() {
     socket = io(options.host);
     peer = new Peer("client", {
         host: options.host,
-        port: "9000",
+        port: options.port,
         secure: options.secure
     });
 
