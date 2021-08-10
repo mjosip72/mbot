@@ -7,7 +7,7 @@ let options = {
     path: "/"
 };
 if(!USE_LOCALHOST) {
-    options.host = "https://mjosip-mbot.herokuapp.com";
+    options.host = "https://mjosip-peerjs.herokuapp.com/";
     options.secure = true;
 }
 
