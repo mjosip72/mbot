@@ -4,7 +4,7 @@ let options = {
     host: "/",
     secure: false,
     port: 443,
-    path: "/myapp"
+    path: "/"
 };
 if(!USE_LOCALHOST) {
     options.host = "https://mjosip-mbot.herokuapp.com";

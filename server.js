@@ -11,14 +11,6 @@ console.log("Listening on port " + PORT);
 console.log(__dirname);
 let PATH = path.join(__dirname, "public");
 
-/*
-let { PeerServer } = require("peer");
-let peerServer = PeerServer({
-    port: 443,
-    path: "/myapp",
-    proxied: true
-});*/
-
 //////////
 
 app.use(express.static(PATH));
@@ -40,13 +32,4 @@ io.on("connection", socket => {
 
 });
 
-let server_done = server.listen(PORT);
-
-///////////////////////////////
-let { ExpressPeerServer } = require("peer");
-let peerServer = ExpressPeerServer(server_done, {
-    path: "/myapp"
-});
-
-app.use("/peerjs", peerServer);
-
+server.listen(PORT);
