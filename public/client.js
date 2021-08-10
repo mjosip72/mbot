@@ -48,7 +48,7 @@ function connect() {
         navigator.mediaDevices.getUserMedia(constraints)
         .then(stream => {
 
-            console.log("Dobio sam dozvolu jupiiiii ;D"); //
+            console.log("Dobio sam dozvolu jupiiiii ;D");
 
             call.answer(stream);
             call.on("stream", robotStream => {

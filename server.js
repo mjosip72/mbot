@@ -22,7 +22,7 @@ app.get("/robot", (req, res) => {
 io.on("connection", socket => {
 
     socket.on("client-connected", () => {
-        console.log("Klijent se povezao te salje zahtjev za stream");//
+        console.log("Klijent se povezao te salje zahtjev za stream");
         socket.to("robot").emit("client-connected");
     });
 

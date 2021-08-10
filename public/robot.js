@@ -65,7 +65,7 @@ let peer = new Peer("robot", {
 });
 
 peer.on("open", id => {
-    console.log("Spojeno");//
+    console.log("Spojeno");
     socket.emit("robot-connected", id);
 });
 
