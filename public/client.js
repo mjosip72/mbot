@@ -25,7 +25,7 @@ let peer;
 
 function connect() {
 
-    socket = io(options.host);
+    socket = io("mjosip-mbot.herokuapp.com");
     peer = new Peer("client", {
         host: options.host,
         port: options.port,

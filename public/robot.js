@@ -62,7 +62,7 @@ function stop() {
 
 }
 
-let socket = io(options.host);
+let socket = io("mjosip-mbot.herokuapp.com");
 
 let peer = new Peer("robot", {
     host: options.host,
