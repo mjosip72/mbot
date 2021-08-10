@@ -57,6 +57,7 @@ function stop() {
 }
 
 let raw_conn;
+let client_stream;
 
 let socket = io(host);
 
@@ -80,7 +81,8 @@ socket.on("client-connected", () => {
     let call = peer.call("client", myStream);
 
     call.on("stream", clientStream => {
-        console.log("Dobio sam od klijenta stream");
+        client_stream = clientStream;
+        console.log("Dobio sam od klijenta stream", clientStream);
         audio.srcObject = clientStream;
         audio.addEventListener('loadedmetadata', () => {
             audio.play();

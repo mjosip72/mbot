@@ -17,11 +17,18 @@ let connected = false;
 let socket;
 let peer;
 let raw_conn;
+let robot_stream;
 
 let p_log = document.getElementById("log");
-function log(x) {
-    console.log(x);
-    p_log.innerHTML += x + "<br>";
+
+function log(x, a) {
+    if(a == undefined) {
+        console.log(x);
+        p_log.innerHTML += x + "<br>";
+        return;
+    }
+    console.log(x, a);
+    p_log.innerHTML += x + ", " + a + "<br>";
 }
 
 function connect() {
@@ -37,13 +44,13 @@ function connect() {
 
     peer.on("open", () => {
         log("Spojeno");
-        log("Saljem serveru do znanja da je klijent spojen...");
+        log("Saljem serveru zahtjev za video i audio komunikaciju...");
         socket.emit("client-connected");
     });
 
     peer.on("call", call => {
         
-        log("Server me zove, odgovorit cu na poziv ;)");
+        log("Server me zove, odgovoram na poziv");
 
         const constraints = {
             video: false,
@@ -55,12 +62,12 @@ function connect() {
         navigator.mediaDevices.getUserMedia(constraints)
         .then(stream => {
 
-            log("Dobio sam dozvolu jupiiiii ;D");
+            log("Dobio sam dozvolu");
 
             call.answer(stream);
             call.on("stream", robotStream => {
-
-                log("Server mi je poslao svoj stream ;)");
+                robot_stream = robotStream;
+                log("Server mi je poslao svoj stream", robotStream);
 
                 video.srcObject = robotStream;
                 video.addEventListener('loadedmetadata', () => {
@@ -82,6 +89,11 @@ function connect() {
         });
     });
 
+}
+
+function on_btn_play() {
+    console.log("btn play");
+    video.play();
 }
 
 function disconnect() {
