@@ -38,23 +38,7 @@ function connect() {
         
         console.log("Server me zove, odgovorit cu na poziv ;)");
 
-        call.answer();
-        call.on("stream", robotStream => {
-
-            console.log("Server mi je poslao svoj stream ;)   ");
-            console.log(robotStream);
-
-            video.srcObject = robotStream;
-            video.addEventListener('loadedmetadata', () => {
-                video.play();
-            });
-
-            connected = true;
-            control_btn.innerHTML = "Disconnect";
-
-        });
-
-        /*const constraints = {
+        const constraints = {
             video: false,
             audio: true
         };
@@ -81,8 +65,6 @@ function connect() {
 
             });
         });
-
-        */
 
     });
 
