@@ -4,14 +4,14 @@ let app = express();
 let server = require("http").Server(app);
 let io = require("socket.io")(server);
 
-//////////
+////////////
 let path = require("path");
 let PORT = process.env.PORT || 5000;
 console.log("Listening on port " + PORT);
 console.log(__dirname);
 let PATH = path.join(__dirname, "public");
 
-//////////
+////////////
 
 app.use(express.static(PATH));
 
