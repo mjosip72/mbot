@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+    <title>Robot</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <script src="https://unpkg.com/peerjs@1.3.2/dist/peerjs.min.js" defer></script>
+    <script src="/socket.io/socket.io.js" defer></script>
+    <script src="robot.js" defer></script>
+
+</head>
+<body>
+
+    <div class="content-container">
+        <div class="content">
+            
+            <div>
+                <video id="video"></video>
+                <audio id="audio"></audio>
+            </div>
+
+            <div style="text-align: center;">
+                <button id="control_btn">Start</button>  
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

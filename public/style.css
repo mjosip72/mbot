@@ -1,0 +1,65 @@
+
+:root {
+
+	--theme-accent: #B6FF00;
+	--theme-background: #1E1E1E;
+	--theme-background-alt: #333333;
+	
+	font-family: 'Roboto', sans-serif;
+	background-color: var(--theme-background);
+	color: white;
+	
+}
+
+::selection {
+	color: black;
+	background: var(--theme-accent);
+}
+
+html, body {
+	height: 100%;
+}
+
+body {
+	margin: auto;
+}
+
+.content-container {
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.content {
+	
+}
+
+video {
+	background-color: black;
+}
+
+button {
+
+	font-family: 'Roboto', sans-serif;
+	font-size: 18px;
+	padding: 10px 24px;
+	cursor: pointer;
+	outline: 0;
+	margin: 16px 0px;
+		
+	text-decoration: none;
+	border-radius: 24px;
+		
+	background-color: transparent;
+	border: 3px solid var(--theme-accent);
+	color: white;
+		
+	transition-duration: 0.4s;
+
+}
+
+button.active, button:hover {
+	background-color: var(--theme-accent);
+	color: black;
+}
