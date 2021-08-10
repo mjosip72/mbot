@@ -6,7 +6,7 @@ let options = {
     port: 443
 };
 if(!USE_LOCALHOST) {
-    options.host = "https://mjosip-peerjs.herokuapp.com/";
+    options.host = "mjosip-peerjs.herokuapp.com";
     options.secure = true;
 }
 
