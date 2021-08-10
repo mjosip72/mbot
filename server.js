@@ -40,4 +40,13 @@ io.on("connection", socket => {
 
 });
 
-server.listen(PORT);
+let server_done = server.listen(PORT);
+
+///////////////////////////////
+let { ExpressPeerServer } = require("peer");
+let peerServer = ExpressPeerServer(server_done, {
+    path: "/myapp"
+});
+
+app.use("/peerjs", peerServer);
+
