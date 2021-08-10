@@ -1,13 +1,7 @@
 
-let USE_LOCALHOST = false;
-let options = {
-    host: "/",
-    secure: false,
-    port: 443,
-};
-if(!USE_LOCALHOST) {
-    options.host = "mjosip-peerjs.herokuapp.com";
-    options.secure = true;
+let host = "mjosip-mbot.herokuapp.com";
+if(document.location.hostname == "localhost") {
+    host = "/";
 }
 
 let control_btn = document.getElementById("control_btn");
@@ -62,22 +56,28 @@ function stop() {
 
 }
 
-let socket = io("mjosip-mbot.herokuapp.com");
+let socket = io(host);
 
 let peer = new Peer("robot", {
-    host: options.host,
-    port: options.port,
-    secure: options.secure
+    host: "mjosip-peerjs.herokuapp.com",
+    port: 443,
+    secure: true
 });
 
 peer.on("open", id => {
+    console.log("Spojeno");//
     socket.emit("robot-connected", id);
 });
 
 socket.on("client-connected", () => {
 
+    console.log("Klijent se povezao");
+    console.log("Zovem klijenta....");
+
     let call = peer.call("client", myStream);
+
     call.on("stream", clientStream => {
+        console.log("Dobio sam od klijenta stream");
         audio.srcObject = clientStream;
         audio.addEventListener('loadedmetadata', () => {
             audio.play();

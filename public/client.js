@@ -1,13 +1,7 @@
 
-let USE_LOCALHOST = false;
-let options = {
-    host: "/",
-    secure: false,
-    port: 443
-};
-if(!USE_LOCALHOST) {
-    options.host = "mjosip-peerjs.herokuapp.com";
-    options.secure = true;
+let host = "mjosip-mbot.herokuapp.com";
+if(document.location.hostname == "localhost") {
+    host = "/";
 }
 
 let control_btn = document.getElementById("control_btn");
@@ -25,28 +19,41 @@ let peer;
 
 function connect() {
 
-    socket = io("mjosip-mbot.herokuapp.com");
+    console.log("Probajmo se spojiti...");
+
+    socket = io(host);
     peer = new Peer("client", {
-        host: options.host,
-        port: options.port,
-        secure: options.secure
+        host: "mjosip-peerjs.herokuapp.com",
+        port: 443,
+        secure: true
     });
 
     peer.on("open", () => {
+        console.log("Spojeno");
+        console.log("Saljem serveru do znanja da je klijent spojen...");
         socket.emit("client-connected");
     });
 
     peer.on("call", call => {
         
+        console.log("Server me zove, odgovorit cu na poziv ;)");
+
         const constraints = {
             video: false,
             audio: true
         };
         
+        console.log("Trazim dozvolu za mikrofon");
+
         navigator.mediaDevices.getUserMedia(constraints)
         .then(stream => {
+
+            console.log("Dobio sam dozvolu jupiiiii ;D"); //
+
             call.answer(stream);
             call.on("stream", robotStream => {
+
+                console.log("Server mi je poslao svoj stream ;)");
 
                 video.srcObject = robotStream;
                 video.addEventListener('loadedmetadata', () => {
@@ -64,5 +71,7 @@ function connect() {
 }
 
 function disconnect() {
-
+    connected = false;
 }
+
+console.log("Pozdrav ;)");

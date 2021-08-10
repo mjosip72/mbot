@@ -22,11 +22,12 @@ app.get("/robot", (req, res) => {
 io.on("connection", socket => {
 
     socket.on("client-connected", () => {
-        socket.join("client");
+        console.log("Klijent se povezao te salje zahtjev za stream");//
         socket.to("robot").emit("client-connected");
     });
 
     socket.on("robot-connected", () => {
+        console.log("Robot se povezao");
         socket.join("robot");
     });
 
