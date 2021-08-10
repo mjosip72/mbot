@@ -4,10 +4,9 @@ let options = {
     host: "/",
     secure: false,
     port: 443,
-    path: "/"
 };
 if(!USE_LOCALHOST) {
-    options.host = "https://mjosip-peerjs.herokuapp.com/";
+    options.host = "mjosip-peerjs.herokuapp.com";
     options.secure = true;
 }
 
@@ -68,8 +67,7 @@ let socket = io(options.host);
 let peer = new Peer("robot", {
     host: options.host,
     port: options.port,
-    secure: options.secure,
-    path: options.path
+    secure: options.secure
 });
 
 peer.on("open", id => {

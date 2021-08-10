@@ -3,8 +3,7 @@ let USE_LOCALHOST = false;
 let options = {
     host: "/",
     secure: false,
-    port: 443,
-    path: "/"
+    port: 443
 };
 if(!USE_LOCALHOST) {
     options.host = "https://mjosip-peerjs.herokuapp.com/";
@@ -30,8 +29,7 @@ function connect() {
     peer = new Peer("client", {
         host: options.host,
         port: options.port,
-        secure: options.secure,
-        path: options.path
+        secure: options.secure
     });
 
     peer.on("open", () => {
