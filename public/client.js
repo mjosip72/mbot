@@ -46,6 +46,7 @@ function log(x) {
 let connected = false;
 let socket;
 let peer;
+let data_connection;
 
 function connect() {
 
@@ -98,6 +99,10 @@ function connect_to_peer_network() {
 
     });
 
+    peer.on("connection", conn => {
+        data_connection = conn;
+    });
+
 }
 
 //#endregion
@@ -138,43 +143,6 @@ function stop_streaming() {
 
 //#endregion
 
-
-
-/*
-
-    peer.on("call", call => {
-        call.answer();
-        call.on("stream", robotStream => {
-            robot_stream = robotStream;
-            
-            robotStream.getTracks().forEach(track => {
-                console.log(track);
-            });
-
-
-            log("Server mi je poslao svoj stream", robotStream);
-            video.srcObject = robotStream;
-            video.addEventListener('loadedmetadata', () => {
-                  video.play();
-            });
-
-            connected = true;
-            control_btn.innerHTML = "Disconnect";
-
-        });
-    });
-
-    peer.on("connection", conn => {
-        raw_conn = conn;
-        conn.on("data", data => {
-            console.log("Received", data);
-        });
-    });
-
-}
-
-*/
-
 //#region keys
 
 let control_span = document.getElementById("control");
@@ -184,8 +152,8 @@ let __speed = 2;
 
 function send_key_event(x) {
     
-    if(raw_conn) {
-        raw_conn.send(x);
+    if(data_connection) {
+        data_connection.send(x);
     }
 
     if(x == "shift") __speed = 3;

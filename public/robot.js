@@ -35,6 +35,8 @@ function log(x) {
 //#region connection
 
 let socket = io(host);
+let connected = false;
+let peer;
 
 log("Requesting connection");
 socket.emit("request-connection", "robot");
@@ -48,9 +50,6 @@ socket.on("connection-rejected", (reason) => {
     log("Connection rejected");
     log("Reason: " + reason);
 });
-
-let connected = false;
-let peer;
 
 function connect_to_peer_network() {
 
@@ -80,15 +79,6 @@ function start_streaming() {
 
     log("Requesting media");
 
-    /*
-    const constraints = {
-        video: {
-            width: { exact: 640 },
-            height: { exact: 480 }
-        },
-        audio: true
-    };
-    */
     const constraints = {
         audio: true,
         video: {
@@ -123,6 +113,7 @@ function stop_streaming() {
 socket.on("request-media", () => {
 
     log("Media requested");
+
     let call = peer.call("client", robot_stream);
     call.on("stream", stream => {
         log("Got client stream");
@@ -130,34 +121,18 @@ socket.on("request-media", () => {
         client_video.srcObject = stream;
     });
 
+    let conn = peer.connect("client");
+    conn.on("data", data => {
+        console.log("Received", data);
+        send_key_event(data);
+    });
+
 });
 
 //#endregion
 
 
-
-
-
 /*
-
-
-
-socket.on("client-connected", () => {
-
-    console.log("Klijent se povezao");
-    console.log("Zovem klijenta....");
-
-    let call = peer.call("client", myStream);
-
-    call.on("stream", clientStream => {
-        client_stream = clientStream;
-        console.log("Dobio sam od klijenta stream", clientStream);
-        audio.srcObject = clientStream;
-        audio.addEventListener('loadedmetadata', () => {
-            audio.play();
-        });
-    });
-
     let conn = peer.connect("client");
     raw_conn = conn;
     conn.on("open", () => {
