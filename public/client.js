@@ -143,7 +143,7 @@ function stop_streaming() {
 
 //#endregion
 
-//#region keys
+//#region robot control
 
 let control_span = document.getElementById("control");
 

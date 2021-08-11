@@ -24,6 +24,18 @@ control_btn.addEventListener("click", e => {
     else start_streaming();
 });
 
+function set_ble_connected(value) {
+    ble_connected = value;
+    if(ble_connected) ble_btn.innerHTML = "BLE Disconnect";
+    else ble_btn.innerHTML = "BLE Connect";
+}
+
+let ble_btn = document.getElementById("ble_btn");
+ble_btn.addEventListener("click", e => {
+    if(ble_connected) ble_disconnect();
+    else ble_connect();
+});
+
 let log_element = document.getElementById("log");
 function log(x) {
     log_element.innerHTML += x + "<br>";
@@ -131,36 +143,54 @@ socket.on("request-media", () => {
 
 //#endregion
 
+//#region ble
 
-/*
-    let conn = peer.connect("client");
-    raw_conn = conn;
-    conn.on("open", () => {
-        conn.on("data", data => {
-            console.log("Received", data);
-            send_key_event(data);
-        });
-    });
+let ble_connected;
 
-});
+let bluetooth_device;
+let ble_characteristic;
 
+const NAME = "Croduino Nova32 BLE";
+const SERVICE_UUID = "a2bf82f9-36a0-458b-b41b-bdf3c2924de9";
+const CHARACTERISTIC_UUID = "4a644eb4-2c92-429b-b022-d827fa83db5f";
 
+function ble_connect() {
 
-*/
+    const options = {
+        filters: [
+            { name: NAME },
+            { services: [SERVICE_UUID] }
+        ]
+    };
 
+    navigator.bluetooth.requestDevice(options)
+    .then(device => {
+        bluetooth_device = device;
+        return device.gatt.connect();
+    })
+    .then(server => {
+        return server.getPrimaryService(SERVICE_UUID);
+    })
+    .then(service => {
+        return service.getCharacteristic(CHARACTERISTIC_UUID);
+    })
+    .then(characteristic => {
+        ble_characteristic = characteristic;
+        set_ble_connected(true);
+    })
 
+}
 
+function ble_disconnect() {
+    if(bluetooth_device.gatt.connected) {
+        bluetooth_device.gatt.disconnect();
+    }
+    set_ble_connected(false);
+}
 
+//#endregion
 
-
-
-
-
-
-
-
-
-
+//#region robot control
 
 let control_span = document.getElementById("control");
 
@@ -189,3 +219,5 @@ function send_key_event(x) {
     }
     
 }
+
+//#endregion
