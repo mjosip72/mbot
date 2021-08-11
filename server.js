@@ -5,7 +5,7 @@ let server = require("http").Server(app);
 let io = require("socket.io")(server);
 let path = require("path");
 
-let PORT = 3000 || process.env.PORT;
+let PORT = 8080 || process.env.PORT;
 let PATH = path.join(__dirname, "public");
 
 app.use(express.static(PATH));
