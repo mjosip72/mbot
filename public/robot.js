@@ -91,8 +91,9 @@ function start_streaming() {
     */
     const constraints = {
         audio: true,
-        video: true,
-        facingMode: { exact: "environment" }
+        video: {
+            facingMode: { exact: "environment" }
+        }
     };
 
     navigator.mediaDevices.getUserMedia(constraints)
