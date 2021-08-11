@@ -4,22 +4,83 @@ if(document.location.hostname == "localhost") {
     host = "/";
 }
 
+//#region controls
+
+let robot_video = document.getElementById("robot_video");
+let client_video = document.getElementById("client_video");
+robot_video.muted = true;
+
+let streaming = false;
+function set_streaming(value) {
+    streaming = value;
+    if(streaming) control_btn.innerHTML = "Stop";
+    else control_btn.innerHTML = "Start";
+}
+
 let control_btn = document.getElementById("control_btn");
 control_btn.addEventListener("click", e => {
-    if(running) stop();
-    else start();
+    if(!connected) return;
+    if(streaming) stop_streaming();
+    else start_streaming();
 });
 
-let video = document.getElementById("video");
-let audio = document.getElementById("audio");
-video.muted = true;
+let log_element = document.getElementById("log");
+function log(x) {
+    log_element.innerHTML += x + "<br>";
+    console.log(x);
+}
 
-let myStream;
+//#endregion
 
-let running = false;
+//#region connection
 
-function start() {
+let socket = io(host);
 
+log("Requesting connection");
+socket.emit("request-connection", "robot");
+
+socket.on("connection-approved", () => {
+    log("Connection approved");
+    connect_to_peer_network();
+});
+
+socket.on("connection-rejected", (reason) => {
+    log("Connection rejected");
+    log("Reason: " + reason);
+});
+
+let connected = false;
+let peer;
+
+function connect_to_peer_network() {
+
+    log("Connectiong to peer network");
+
+    peer = new Peer("robot", {
+        host: "mjosip-peerjs.herokuapp.com",
+        port: 443,
+        secure: true
+    });
+    
+    peer.on("open", id => {
+        log("Connected");
+        connected = true;
+    });
+
+}
+
+//#endregion
+
+//#region stream
+
+let robot_stream;
+let client_stream;
+
+function start_streaming() {
+
+    log("Requesting media");
+
+    /*
     const constraints = {
         video: {
             width: { exact: 640 },
@@ -27,50 +88,56 @@ function start() {
         },
         audio: true
     };
-    
+    */
+    const constraints = {
+        audio: true,
+        video: true
+    };
+
     navigator.mediaDevices.getUserMedia(constraints)
     .then(stream => {
-
-        myStream = stream;
-
-        video.srcObject = stream;
-        video.addEventListener('loadedmetadata', () => {
-            video.play();
-        });
-
-        running = true;
-        control_btn.innerHTML = "Stop";
-
+        robot_stream = stream;
+        robot_video.srcObject = stream;
+        set_streaming(true);
+        log("Success");
+    })
+    .catch(error => {
+        log("Error");
     });
 
 }
 
-function stop() {
-
-    video.srcObject.getTracks().forEach(track => {
+function stop_streaming() {
+    robot_stream.getTracks().forEach(track => {
         track.stop();
     });
-
-    running = false;
-    control_btn.innerHTML = "Start";
-
+    set_streaming(false);
 }
 
-let raw_conn;
-let client_stream;
+//#endregion
 
-let socket = io(host);
+//#region media
 
-let peer = new Peer("robot", {
-    host: "mjosip-peerjs.herokuapp.com",
-    port: 443,
-    secure: true
+socket.on("request-media", () => {
+
+    log("Media requested");
+    let call = peer.call("client", robot_stream);
+    call.on("stream", stream => {
+        log("Got client stream");
+        client_stream = stream;
+        client_video.srcObject = stream;
+    });
+
 });
 
-peer.on("open", id => {
-    console.log("Spojeno");
-    socket.emit("robot-connected", id);
-});
+//#endregion
+
+
+
+
+
+/*
+
 
 
 socket.on("client-connected", () => {
@@ -99,6 +166,14 @@ socket.on("client-connected", () => {
     });
 
 });
+
+
+
+*/
+
+
+
+
 
 
 

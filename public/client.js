@@ -4,55 +4,155 @@ if(document.location.hostname == "localhost") {
     host = "/";
 }
 
-let control_btn = document.getElementById("control_btn");
-control_btn.addEventListener("click", e => {
-    if(connected) disconnect();
-    else connect();
+//#region controls
+
+let robot_video = document.getElementById("robot_video");
+let client_video = document.getElementById("client_video");
+client_video.muted = true;
+
+function set_connected(value) {
+    connected = value;
+    if(connected) connect_btn.innerHTML = "Connected";
+}
+
+let connect_btn = document.getElementById("connect_btn");
+connect_btn.addEventListener("click", e => {
+    if(!connected) connect();
 });
 
-let video = document.getElementById("video");
+let streaming = false;
+function set_streaming(value) {
+    streaming = value;
+    if(streaming) control_btn.innerHTML = "Stop";
+    else control_btn.innerHTML = "Start";
+}
+
+let control_btn = document.getElementById("control_btn");
+control_btn.addEventListener("click", e => {
+    if(!streaming) start_streaming();
+    else stop_streaming();
+});
+
+let log_element = document.getElementById("log");
+function log(x) {
+    log_element.innerHTML += x + "<br>";
+    console.log(x);
+}
+
+//#endregion
+
+//#region connection
 
 let connected = false;
-
 let socket;
 let peer;
-let raw_conn;
-let robot_stream;
-
-let p_log = document.getElementById("log");
-
-function log(x, a) {
-    if(a == undefined) {
-        console.log(x);
-        p_log.innerHTML += x + "<br>";
-        return;
-    }
-    console.log(x, a);
-    p_log.innerHTML += x + ", " + a + "<br>";
-}
 
 function connect() {
 
-    log("Probajmo se spojiti...");
-
     socket = io(host);
+
+    log("Requesting connection");
+    socket.emit("request-connection", "client");
+
+    socket.on("connection-approved", () => {
+        log("Connection approved");
+        connect_to_peer_network();
+    });
+
+    socket.on("connection-rejected", (reason) => {
+        log("Connection rejected");
+        log("Reason: " + reason);
+    });
+
+}
+
+function connect_to_peer_network() {
+
+    log("Connectiong to peer network");
+
     peer = new Peer("client", {
         host: "mjosip-peerjs.herokuapp.com",
         port: 443,
         secure: true
     });
+    
+    peer.on("open", id => {
 
-    peer.on("open", () => {
-        log("Spojeno");
-        log("Saljem serveru zahtjev za video i audio komunikaciju...");
-        socket.emit("client-connected");
+        log("Connected");
+        set_connected(true);
+
+        log("Requesting robot media");
+        socket.emit("request-robot-media");
+
     });
+
+    peer.on("call", call => {
+
+        call.answer(client_stream);
+
+        call.on("stream", stream => {
+            log("Got robot stream");
+            robot_stream = stream;
+            robot_video.srcObject = stream;
+        });
+
+    });
+
+}
+
+//#endregion
+
+//#region stream
+
+let robot_stream;
+let client_stream;
+
+function start_streaming() {
+
+    log("Requesting media");
+
+    const constraints = {
+        audio: true,
+        video: false
+    };
+
+    navigator.mediaDevices.getUserMedia(constraints)
+    .then(stream => {
+        client_stream = stream;
+        client_video.srcObject = stream;
+        set_streaming(true);
+        log("Success");
+    })
+    .catch(error => {
+        log("Error");
+    });
+
+}
+
+function stop_streaming() {
+    client_stream.getTracks().forEach(track => {
+        track.stop();
+    });
+    set_streaming(false);
+}
+
+//#endregion
+
+
+
+/*
 
     peer.on("call", call => {
         call.answer();
         call.on("stream", robotStream => {
             robot_stream = robotStream;
-             log("Server mi je poslao svoj stream", robotStream);
+            
+            robotStream.getTracks().forEach(track => {
+                console.log(track);
+            });
+
+
+            log("Server mi je poslao svoj stream", robotStream);
             video.srcObject = robotStream;
             video.addEventListener('loadedmetadata', () => {
                   video.play();
@@ -63,41 +163,6 @@ function connect() {
 
         });
     });
-    /*
-    peer.on("call", call => {
-        
-        log("Server me zove, odgovoram na poziv");
-
-        const constraints = {
-            video: false,
-            audio: true
-        };
-        
-        log("Trazim dozvolu za mikrofon");
-
-        navigator.mediaDevices.getUserMedia(constraints)
-        .then(stream => {
-
-            log("Dobio sam dozvolu");
-
-            call.answer(stream);
-            call.on("stream", robotStream => {
-                robot_stream = robotStream;
-                log("Server mi je poslao svoj stream", robotStream);
-
-                video.srcObject = robotStream;
-                video.addEventListener('loadedmetadata', () => {
-                    video.play();
-                });
-
-                connected = true;
-                control_btn.innerHTML = "Disconnect";
-
-            });
-        });
-
-    });
-    */
 
     peer.on("connection", conn => {
         raw_conn = conn;
@@ -108,14 +173,7 @@ function connect() {
 
 }
 
-function on_btn_play() {
-    console.log("btn play");
-    video.play();
-}
-
-function disconnect() {
-    connected = false;
-}
+*/
 
 //#region keys
 
@@ -235,5 +293,3 @@ window.addEventListener("keyup", e => {
 });
 
 // #endregion
-
-console.log("Pozdrav ;)");
