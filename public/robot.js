@@ -143,6 +143,17 @@ socket.on("request-media", () => {
 
 //#endregion
 
+//#region robot commands
+const COMMAND_FORWARD       = 10;
+const COMMAND_BACKWARD      = 20;
+const COMMAND_LEFT          = 30;
+const COMMAND_RIGHT         = 40;
+const COMMAND_STOP          = 50;
+const COMMAND_SPEED_NORMAL  = 60;
+const COMMAND_SPEED_SLOW    = 70;
+const COMMAND_SPEED_FAST    = 80;
+//#endregion
+
 //#region ble
 
 let ble_connected;
@@ -153,6 +164,12 @@ let ble_characteristic;
 const NAME = "Croduino Nova32 BLE";
 const SERVICE_UUID = "a2bf82f9-36a0-458b-b41b-bdf3c2924de9";
 const CHARACTERISTIC_UUID = "4a644eb4-2c92-429b-b022-d827fa83db5f";
+
+function send_command(x) {
+    if(!ble_connected) return;
+    let value = Uint8Array.of(x);
+    ble_characteristic.writeValue(value);
+}
 
 function ble_connect() {
 
@@ -199,6 +216,24 @@ let __speed = 2;
 
 function send_key_event(x) {
     
+    if(x == "w") {
+        send_command(COMMAND_FORWARD);
+    }else if(x == "s") {
+        send_command(COMMAND_BACKWARD);
+    }else if(x == "a") {
+        send_command(COMMAND_LEFT);
+    }else if(x == "d") {
+        send_command(COMMAND_RIGHT);
+    }else if(x == "x") {
+        send_command(COMMAND_STOP);
+    }else if(x == "r") {
+        send_command(COMMAND_SPEED_NORMAL);
+    }else if(x == "shift") {
+        send_command(COMMAND_SPEED_FAST);
+    }else if(x == "alt") {
+        send_command(COMMAND_SPEED_SLOW);
+    }  
+
     if(x == "shift") __speed = 3;
     else if(x == "alt") __speed = 1;
     else if(x == "r") __speed = 2;
